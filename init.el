@@ -1,3 +1,6 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Initial setup
 ;; Do not show the startup screen.
 (setq inhibit-startup-message t)
 
@@ -131,26 +134,19 @@
 
 (global-set-key (kbd "<mouse-9>") 'yank) 
 
-(global-set-key (kbd "s-x") 'kill-ring) 
-
+(global-set-key (kbd "s-x") 'kill-region) 
 (global-set-key (kbd "s-c") 'kill-ring-save) 
-
 (global-set-key (kbd "s-v") 'yank)
-(global-set-key (kbd "s-d") 'yank)
+(global-set-key (kbd "C-d") 'yank)
 
 
 (global-set-key (kbd "s-h") 'replace-match)  
-  
-  
-
-(global-set-key (kbd "s-a") 'mark-whole-buffer) 
+   
 (global-set-key (kbd "C-a") 'mark-whole-buffer) 
 
-(global-set-key (kbd "s-/") 'comment-region) 
+(global-set-key (kbd "s-/") 'comment-dwim) 
 
-(global-set-key (kbd "s-.") 'uncomment-region) 
-
-(global-set-key (kbd "s-q") 'delete-other-windows) 
+(global-set-key (kbd "C-q") 'delete-other-windows) 
 
 ;; Try if it works with s instead of C
 (global-set-key (kbd "C-n") 'linum-mode) 
@@ -194,3 +190,24 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Additional setup
 (add-to-list 'auto-mode-alist '("\\.inc\\'" . tcl-mode)) 
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun my/select-current-line-and-forward-line (arg)
+  "Select the current line and move the cursor by ARG lines IF
+no region is selected.
+
+If a region is already selected when calling this command, only move
+the cursor by ARG lines."
+  (interactive "p")
+  (when (not (use-region-p))
+    (forward-line 0)
+    (set-mark-command nil))
+  (forward-line arg))
+;; Note that I would not recommend binding this command to `C-l'.
+;; From my personal experience, the default binding to `C-l' to
+;; `recenter-top-bottom' is very useful.
+(global-set-key (kbd "C-l") #'my/select-current-line-and-forward-line)
